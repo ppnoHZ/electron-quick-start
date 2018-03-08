@@ -9,6 +9,7 @@
     <script src="./public/js/flexible.js"></script>
     <link rel="stylesheet" href="./public/css/bootstrap.min.css">
     <link rel="stylesheet" href="./public/css/index.css">
+
 </head>
 
 <body>
@@ -36,8 +37,8 @@
                 <div class="send-header">
                     <label>接受信息</label>
                 </div>
-                <!-- <div class="receive-windows">
-                </div> -->
+                <div class="receive-windows">
+                </div>
             </div>
             <div class="receive-box">
                 <div class="send-header">
@@ -82,7 +83,7 @@
         let BaudRate = $('#BaudRate').val();
         console.log(COM);
         console.log(BaudRate);
-        port = new SerialPort("/dev/tty.usbserial", {
+        port = new SerialPort(COM, {
             baudRate: parseInt(BaudRate),
             stopBits: 2,
             parity: 'none'
@@ -98,6 +99,8 @@
 
 
         port.on('data', data => {
+
+            console.log('data', data.toString('hex').toUpperCase());
             var values = '';
             var status = '';
             var status_obj = {};
@@ -148,7 +151,7 @@
                 console.log('无效数据')
             }
 
-            $('.receive-windows').append(values + '===');
+            $('.receive-windows').append("<div>" + values + '</div>');
         });
     });
 
