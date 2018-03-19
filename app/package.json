@@ -3,15 +3,60 @@
   "version": "0.0.1",
   "description": "",
   "main": "main.js",
+  "description": "串口调试",
   "scripts": {
     "start": "electron ."
   },
   "author": "Gavin",
   "license": "ISC",
   "dependencies": {
-    "serialport": "^6.1.1"
+    "electron-json-storage": "^4.0.2",
+    "node-localstorage": "^1.3.0",
+    "serialport": "^6.1.1",
+    "child_process": "^1.0.2",
+    "devtron": "^1.4.0",
+    "electron-builder-squirrel-windows": "^20.2.0",
+    "electron-squirrel-startup": "^1.0.0",
+    "glob": "^7.1.2",
+    "lodash": "^4.17.5",
+    "os": "^0.1.1"
+  },
+  "build": {
+    "appId": "com.rsc.tradecenter",
+    "mac": {
+      "category": "your.app.category.type",
+      "icon": "../assets/app-icon/mac/app.icns",
+      "bundleVersion": "0.0.1",
+      "identity": "Beijing RSC Internet Technology Co. Ltd. (CHWCG9535P)",
+      "bundleShortVersion": "1.0.7",
+      "target": [
+        "zip",
+        "dmg"
+      ]
+    },
+    "win": {
+      "icon": "../assets/app-icon/win/256.ico",
+      "publisherName": "北京日升昌记科技有限公司",
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64",
+            "ia32"
+          ]
+        }
+      ]
+    },
+    "productName": "贸易中心",
+    "copyright": "Copyright © 2018 RSC",
+    "squirrelWindows": {
+      "artifactName": "贸易中心",
+      "iconUrl": "../assets/app-icon/win/256.ico",
+      "loadingGif": "../assets/app-icon/loading.gif"
+    }
   },
   "devDependencies": {
+    "electron-builder": "^20.2.0",
     "electron-rebuild": "^1.6.0"
   }
 }

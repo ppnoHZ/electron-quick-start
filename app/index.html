@@ -23,7 +23,7 @@
                 </div>
                 <div class="form-group">
                     <label for="BaudRate">波特率</label>
-                    <input type="text" class="form-control" id="BaudRate" value="9600">
+                    <input type="text" class="form-control" id="BaudRate" value="2400">
                 </div>
             </div>
             <div class="submit-data">
@@ -73,19 +73,34 @@
 
     let parser = null;
     SerialPort.list((err, ports) => {
+
+
         for (let item of ports) {
             $('.com').append(`<option>${item.comName}</option>`)
         }
         console.log(ports);
     });
+
+    var test = {
+        name: 'ddd',
+        convert: function () {
+            return 'test'
+        }
+    }
+    // console.log('JSON.stringify(test)', JSON.stringify(test))
+    // window.localStorage.setItem('key', JSON.stringify(test))
+
+    // console.log(JSON.parse(localStorage.getItem('key')).convert());
     $('.btn-submit').click((data) => {
         let COM = $('select option:selected').text();
         let BaudRate = $('#BaudRate').val();
         console.log(COM);
         console.log(BaudRate);
-        port = new SerialPort(COM, {
-            baudRate: parseInt(BaudRate),
-            stopBits: 2,
+
+        port = new SerialPort("/dev/tty.usbserial", {
+            // baudRate: parseInt(BaudRate),
+            baudRate: 2400,
+            stopBits: 1,
             parity: 'none'
         });
         // parser = port.pipe(new ByteLength({ length: 8 }));
@@ -99,50 +114,24 @@
 
 
         port.on('data', data => {
-
+            console.log("data bite", data)
             console.log('data', data.toString('hex').toUpperCase());
             var values = '';
             var status = '';
             var status_obj = {};
-            if (data.byteLength <= 5) {
-                if (data.byteLength == 1 && data.toString('hex') == 'ff') {
-                    data_string = data.toString('hex');
+            if (data.byteLength <= 8) {
+                if (data.byteLength == 1 && data.toString() == '=') {
+                    data_string = data.toString();
                 } else {
-                    if ((data_string.length + data.toString('hex').length) <= 10) {
-                        data_string += data.toString('hex');
+                    if ((data_string.length + data.toString().length) <= 8) {
+                        data_string += data.toString();
                     } else {
                         data_string = '';
-                        console.log('无效数据')
                     }
-                    if (data_string.length == 10) {
+                    if (data_string.length == 8) {
                         values = data_string.toUpperCase();
-                        //取状态位。转换为二进制
-                        status = parseInt(values.substring(2, 4), 16).toString(2).padStart(8, '0');
-                        //7 0:量程内  1:超载
-                        if (parseInt(status[0])) {
-                            status_obj.overload = true;
-                        } else {
-                            status_obj.overload = false;
-                        }
-                        if (parseInt(status[2])) {
-                            status_obj.plus = false;
-                        } else {
-                            status_obj.plus = true;
-                        }
-                        if (parseInt(status[3])) {
-                            status_obj.stable = true;
-                            console.log('稳定数据');
-                        } else {
-                            status_obj.stable = false;
-                            console.log('非稳定数据');
-                        }
-                        var value = values.substring(8, 10) + values.substring(7, 8) + values.substring(4, 6);
-                        // console.log('小数:', parseInt(status.substring(5, 8)))
-                        status_obj.value = parseInt(value) / Math.pow(10, parseInt(status.substring(5, 8) - 1))
-                        if (!status_obj.plus) {
-                            status_obj.value = status_obj.value * -1;
-                        }
-                        console.log('最终重量:', status_obj.value)
+                        status_obj.value = parseInt(values.substring(1, 8).toString().split("").reverse().join(""));
+                        console.log('最终重量:', status_obj.value);
                         // $('#div_value').in
                         $("#div_value").html(status_obj.value)
                     }
@@ -150,7 +139,6 @@
             } else {
                 console.log('无效数据')
             }
-
             $('.receive-windows').append("<div>" + values + '</div>');
         });
     });

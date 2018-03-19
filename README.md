@@ -16,3 +16,6 @@ $ npm start
 
 ## 效果
 ![](https://i.imgur.com/2QXn7kk.png)
+
+
+npm install -g electron-rebuild
