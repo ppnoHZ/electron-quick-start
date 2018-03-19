@@ -9,3 +9,4 @@ run/
 .idea
 .vscode
 .vs
+app/dist
