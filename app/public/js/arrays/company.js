@@ -11,7 +11,6 @@ port.on('data', data => {
                 data_string += data.toString('hex');
             } else {
                 data_string = '';
-                console.log('无效数据')
             }
             if (data_string.length == 10) {
                 values = data_string.toUpperCase();
